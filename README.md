@@ -62,7 +62,7 @@ Copyright (c) 2021 Nicolas Riquet
 
 *methods_history* has the following columns:
 
-* *Repository: the name of the repository
+* Repository: the name of the repository
 * Branches: the list of branches in which this modification has been integrated.
 * NbBranches: the number of branches in which this modification has been integrated.
 * FilePath: the relative path to file.
