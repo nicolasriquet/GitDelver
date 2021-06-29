@@ -98,7 +98,7 @@ Copyright (c) 2021 Nicolas Riquet
 
 ### GitDelver console program
 
-The **GitDelver console program** can be used for either analyzing a single repository or multiple repositories in bulk. This is the default mode. It both analyzes the repositories and produces the aforementioned CSV files. Please note that it is required that your first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply run a terminal, go to your local **GitDelver** folder and enter the following command *python gitdelver* .
+The **GitDelver console program** can be used for either analyzing a single repository or multiple repositories in bulk. This is the default mode. It both analyzes the repositories and produces the aforementioned CSV files. Please note that it is required that your first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply run a terminal, go to your local **GitDelver** folder and enter the following command *python gitdelver*.
 
 ### Use the GitDelver API from another Python tool (e.g., Jupyter notebook)
 
