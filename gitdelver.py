@@ -80,7 +80,7 @@ if __name__ == "__main__":
     
     repo_path = config_params["repo_path"]
     
-    if (Path("{}/.git".format(repo_path)).exists()):
+    if (utilities.is_single_repository(repo_path)):
         # The path given is a single repository.
         
         _go_delving(repo_path)

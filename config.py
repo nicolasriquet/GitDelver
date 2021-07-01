@@ -5,15 +5,17 @@ This module contains the configuration parameters used when GitDelver is launche
 """
 
 config_params = {
-    # File system path (using regular forward slashes) to either a single Git repository to be analyzed or a folder
+    # File system path (using regular forward slashes, even on Windows so use C:/) 
+    # to either a single Git repository to be analyzed or a folder
     # containing multiple repositories to be processed in bulk. In the latter case, 
     # each subfolder is assumed to be a regular directory containing a .git folder.
     # Example of structure for bulk analysis:
-    # repositories_folder_path/repo 1/(.git + code files)
-    # repositories_folder_path/repo N/(.git + code files)
+    # repositories_folder_path/repo 1/(.git + code files, or bare repo content)
+    # repositories_folder_path/repo N/(.git + code files, or bare repo content)
     "repo_path": "ENTER FILE SYSTEM PATH HERE",
     
-    # File system path (using regular forward slashes) to the folder where the generated CSV files are to be created.
+    # File system path (using regular forward slashes, even on Windows so use C:/) 
+    # to the folder where the generated CSV files are to be created.
     "csv_output_folder_path": "ENTER FILE SYSTEM PATH HERE",
     
     # GitDelver uses some advanced features of PyDriller that are only available for

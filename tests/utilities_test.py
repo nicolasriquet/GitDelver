@@ -4,7 +4,7 @@
 This module contains the unit tests for the "utilities" module. 
 """
 
-import pytest, utilities
+import pytest, os, utilities
 from config import config_params
 from typing import Callable, Dict
 
@@ -55,7 +55,7 @@ def utilities_bugfix_fixture() -> Dict[str, str]:
 
 def test_utilities_is_SATD_Yes(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
     """
-    This unit test checks that GitDelver detects SATD when one of the SATD keywords is used.
+    This unit test checks that is_SATD detects SATD when one of the SATD keywords is used.
     """
     
     for dict_of_modified_lines in utilities_SATD_fixture["modified_lines_with_SATD"]:
@@ -67,7 +67,7 @@ def test_utilities_is_SATD_Yes(utilities_SATD_fixture: Callable[[None], Dict[str
 
 def test_utilities_is_SATD_No(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
     """
-    This unit test checks that GitDelver does not detect SATD when none of the SATD keywords are used.
+    This unit test checks that is_SATD does not detect SATD when none of the SATD keywords are used.
     """
     
     for dict_of_modified_lines in utilities_SATD_fixture["modified_lines_without_SATD"]:
@@ -79,7 +79,7 @@ def test_utilities_is_SATD_No(utilities_SATD_fixture: Callable[[None], Dict[str,
 
 def test_utilities_is_bugfix_Yes(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
     """
-    This unit test checks that GitDelver detects bug fixes when one of the bugfix keywords is used.
+    This unit test checks that is_bugfix detects bug fixes when one of the bugfix keywords is used.
     """
     
     for message in utilities_bugfix_fixture["messages_with_bugfix"]:
@@ -90,7 +90,7 @@ def test_utilities_is_bugfix_Yes(utilities_bugfix_fixture: Callable[[None], Dict
 
 def test_utilities_is_bugfix_No(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
     """
-    This unit test checks that GitDelver does not detect bug fixes when none of the bug fix keywords are present.
+    This unit test checks that is_bugfix does not detect bug fixes when none of the bug fix keywords are present.
     """
 
     for message in utilities_bugfix_fixture["messages_without_bugfix"]:
@@ -101,7 +101,7 @@ def test_utilities_is_bugfix_No(utilities_bugfix_fixture: Callable[[None], Dict[
 
 def test_utilities_change_type_as_string():
     """
-    This unit test checks that GitDelver correctly returns PyDriller's ModificationType enum values as strings.
+    This unit test checks that change_type_as_string correctly returns PyDriller's ModificationType enum values as strings.
     """
 
     change_types = ["ModificationType.ADD",
@@ -126,7 +126,7 @@ def test_utilities_change_type_as_string():
 
 def test_utilities_get_file_type_Production():
     """
-    This unit test checks that GitDelver returns "Production" when the file name does not contain "test".
+    This unit test checks that get_file_type returns "Production" when the file name does not contain "test".
     """
 
     file_name = "Employee.java"
@@ -136,7 +136,8 @@ def test_utilities_get_file_type_Production():
 
 def test_utilities_get_file_type_Test1():
     """
-    This unit test checks that GitDelver returns "Test" when the file name contains "test".
+    This unit test checks that get_file_type returns "Test" when the file name contains "test"
+    at the end of the file name.
     """
 
     file_name = "EmployeeTest.java"
@@ -146,7 +147,8 @@ def test_utilities_get_file_type_Test1():
 
 def test_utilities_get_file_type_Test2():
     """
-    This unit test checks that GitDelver returns "Test" when the file name contains "test".
+    This unit test checks that get_file_type returns "Test" when the file name contains "test"
+    in the middle of the file name.
     """
 
     file_name = "EmployeeTestOfTheMonth.java"
@@ -156,7 +158,7 @@ def test_utilities_get_file_type_Test2():
 
 def test_utilities_keyword_match_found_Yes():
     """
-    This unit test checks that GitDelver returns True when "string" contains one of the words
+    This unit test checks that keyword_match_found returns True when "string" contains one of the words
     in keywords_list.
     """
 
@@ -169,7 +171,7 @@ def test_utilities_keyword_match_found_Yes():
 
 def test_utilities_keyword_match_found_No():
     """
-    This unit test checks that GitDelver returns False when "string" does not contain one of
+    This unit test checks that keyword_match_found returns False when "string" does not contain one of
     the words in keywords_list.
     """
 
@@ -179,3 +181,41 @@ def test_utilities_keyword_match_found_No():
     
     assert utilities.keyword_match_found(keywords_list, string) is False
 
+
+def test_is_single_repository_No():
+    """
+    This unit test checks that is_single_repository returns False when repo_path does not point to a single
+    repository.
+    """
+
+    current_dir = os.path.dirname(__file__)
+    
+    folder_containing_multiple_repos = current_dir + "/test_repos"
+    
+    assert utilities.is_single_repository(folder_containing_multiple_repos) is False
+
+
+def test_is_single_repository_regular_yes():
+    """
+    This unit test checks that is_single_repository returns True when repo_path points to a single
+    regular repository.
+    """
+    
+    current_dir = os.path.dirname(__file__)
+
+    single_regular_repo = current_dir + "/test_repos/small_repo"
+    
+    assert utilities.is_single_repository(single_regular_repo) is True
+
+
+def test_is_single_repository_bare_yes():
+    """
+    This unit test checks that is_single_repository returns True when repo_path points to a single
+    bare repository.
+    """
+    
+    current_dir = os.path.dirname(__file__)
+
+    single_regular_repo = current_dir + "/test_repos/small_repo_bare"
+    
+    assert utilities.is_single_repository(single_regular_repo) is True

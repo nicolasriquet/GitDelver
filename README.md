@@ -13,8 +13,8 @@ Copyright (c) 2021 Nicolas Riquet
 *commits_history* has the following columns:
 
 * Repository: the name of the repository.
-* Branches: the list of branches in which this modification has been integrated.
-* NbBranches: the number of branches in which this modification has been integrated.
+* Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
+* NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * CommitId: the identifier of the commit.
 * Message: message of the commit.
 * Author: the author of the modification.
@@ -37,8 +37,8 @@ Copyright (c) 2021 Nicolas Riquet
 *files_history* has the following columns:
 
 * Repository: the name of the repository
-* Branches: the list of branches in which this modification has been integrated.
-* NbBranches: the number of branches in which this modification has been integrated.
+* Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
+* NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * FilePath: the relative path to file.
 * FileName: the name of the file.
 * FileExtension: the file extension.
@@ -63,8 +63,8 @@ Copyright (c) 2021 Nicolas Riquet
 *methods_history* has the following columns:
 
 * Repository: the name of the repository
-* Branches: the list of branches in which this modification has been integrated.
-* NbBranches: the number of branches in which this modification has been integrated.
+* Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
+* NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * FilePath: the relative path to file.
 * FileName: the name of the file.
 * FileType: the type of the file ("Production" or "Test")

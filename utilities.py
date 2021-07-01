@@ -6,6 +6,7 @@ This module contains all utility functions used by GitDelver.
 
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import List, Dict, Tuple
 import enum
 
@@ -80,7 +81,26 @@ def change_type_as_string(modification_type_enum_value: enum) -> str:
         change_type = "UNKNOWN"
     
     return change_type
- 
+
+
+def is_single_repository(repo_path: str) -> bool:
+    """
+    This function returns True if repo_path points to a single repository (regular or bare) rather than a
+    folder containing multiple repositories.
+    """
+    
+    # For regular repositories
+    if Path("{}/.git".format(repo_path)).exists():
+        return True
+    
+    # For bare repositories
+    if (Path("{}/hooks".format(repo_path)).exists() and
+        Path("{}/refs".format(repo_path)).exists()):
+        return True
+    
+    return False
+
+
 def _log(message: str, verbose_info: bool = False, is_exception: bool = False):
     """
     Prints message on stdout with special formatting for verbose mode information and exceptions.
