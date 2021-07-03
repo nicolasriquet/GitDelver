@@ -69,15 +69,15 @@ class Delver:
         
         # Preparation of the datasets.
         commits_columns = ["Repository", "Branches", "NbBranches", "CommitId", "Message", "Author", "DateTime", "Date", "HourOfDay",
-                           "Merge", "BugFix", "SATD", "NbModifiedFiles", "NbModProductionFiles", "NbModTestFiles", "ModifiedFiles", 
-                           "NbModifications", "NbInsertions", "NbDeletions"]
+                           "Merge", "BugFix", "SATD", "NbModifiedFiles", "ModifiedFiles", "NbModifiedProdSourceFiles",
+                           "NbModifiedTestSourceFiles", "NbModifications", "NbInsertions", "NbDeletions"]
         commits_rows = []        
         files_columns = ["Repository", "Branches", "NbBranches", "FilePath", "FileName", "FileExtension", "FileType", "ChangeType",
-                         "NbMethods", "NbMethodsChanged", "NLOC", "CCN", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId",
+                         "NbMethods", "NbMethodsChanged", "NLOC", "Complexity", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId",
                          "Author", "DateTime", "Date", "HourOfDay"]        
         files_rows = []        
         methods_columns = ["Repository", "Branches", "NbBranches", "FilePath", "FileName", "FileType", "MethodName", "NbParams", "NLOC", 
-                           "CCN", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
+                           "Complexity", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
         methods_rows = []
         
         SATD_keywords = config_params["SATD_keywords"]
@@ -145,7 +145,7 @@ class Delver:
             # Create the commits dataset.
             commits_rows.append((self.repository_name, branches, nb_branches, commit.hash, commit.msg, commit.author.name, commit.author_date,
                                  commit_date, commit_hour_of_day, commit.merge, commit_is_bugfix, commit_contains_SATD, commit.files,
-                                 commit_nb_prod_files, commit_nb_test_files, "\n".join(list_of_file_names), commit.lines,
+                                 "\n".join(list_of_file_names), commit_nb_prod_files, commit_nb_test_files, commit.lines,
                                  commit.insertions, commit.deletions))
         
         # Build the datasets.

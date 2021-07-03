@@ -24,10 +24,10 @@ Copyright (c) 2021 Nicolas Riquet
 * Merge: flag telling if the commit is a merge commit.
 * BugFix: flag telling if the modification is a bugfix.
 * SATD: flag telling if the modification contains Self-Admitted Technical Debt.
-* NbModifiedFiles: the number of files modified by this commit.
-* NbModProductionFiles: the number of production files modified by this commit.
-* NbModTestFiles: the number of test files modified by this commit.
+* NbModifiedFiles: the total number of files (supported and unsupported) modified by this commit.
 * ModifiedFiles: the list of files modified by this commit.
+* NbModifiedProdSourceFiles: the number of production source files modified by this commit.
+* NbModifiedTestSourceFiles: the number of test source files modified by this commit.
 * NbModifications: the total number of modifications done by this commit.
 * NbInsertions: the number of insertions done by the commit.
 * NbDeletions: the number of deletions done by the commit.
@@ -47,7 +47,7 @@ Copyright (c) 2021 Nicolas Riquet
 * NbMethods: the number of methods in the file.
 * NbMethodsChanged: the number of methods that have been modified in this file for this commit.
 * NLOC: the number of lines of code of the file.
-* CCN: the Cyclomatic Complexity Number of the file.
+* Complexity: the cyclomatic complexity number of the file.
 * SATD: flag telling if the modification contains Self-Admitted Technical Debt.
 * SATDLine: the line that triggered the SATD flag.
 * NbLinesAdded: the number of lines added.
@@ -71,7 +71,7 @@ Copyright (c) 2021 Nicolas Riquet
 * MethodName: the name of the method.
 * NbParams: the number of parameters in the method signature.
 * NLOC: the number of lines of code of the file.
-* CCN: the Cyclomatic Complexity Number of the method.
+* Complexity: the cyclomatic complexity number of the method.
 * CommitId: the identifier of the commit
 * Author: the author of the modification.
 * DateTime: the date and time of the modification.
