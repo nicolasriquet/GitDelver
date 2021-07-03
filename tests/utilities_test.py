@@ -184,7 +184,7 @@ def test_utilities_keyword_match_found_no():
 
 def test_short_method_name_contains_double_colon_yes():
     """
-    This unit test checks that short_method_name returns the short method name if method_name contains "::".
+    This unit test checks that short_method_name returns the short method name if method_name contains "::". 
     """
     
     long_method_name = "myclass::mymethod"

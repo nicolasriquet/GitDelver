@@ -61,7 +61,7 @@ def is_SATD(SATD_keywords: List[str], dict_of_modified_lines: Dict[str, List[tup
 
 def change_type_as_string(modification_type_enum_value: enum) -> str:
     """
-    Returns a string representing the value of PyDriller's ModificationType enum.
+    Returns a string representing the value of PyDriller's ModificationType enum. 
     PyDriller does not make this enum publicly available to the outside world.
     """
     
