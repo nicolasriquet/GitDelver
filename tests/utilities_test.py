@@ -53,7 +53,7 @@ def utilities_bugfix_fixture() -> Dict[str, str]:
     }
 
 
-def test_utilities_is_SATD_Yes(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
+def test_utilities_is_SATD_yes(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
     """
     This unit test checks that is_SATD detects SATD when one of the SATD keywords is used.
     """
@@ -65,7 +65,7 @@ def test_utilities_is_SATD_Yes(utilities_SATD_fixture: Callable[[None], Dict[str
         assert SATDLine == dict_of_modified_lines["added"][0][1]
 
 
-def test_utilities_is_SATD_No(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
+def test_utilities_is_SATD_no(utilities_SATD_fixture: Callable[[None], Dict[str, str]]):
     """
     This unit test checks that is_SATD does not detect SATD when none of the SATD keywords are used.
     """
@@ -77,7 +77,7 @@ def test_utilities_is_SATD_No(utilities_SATD_fixture: Callable[[None], Dict[str,
         assert SATDLine == ""
 
 
-def test_utilities_is_bugfix_Yes(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
+def test_utilities_is_bugfix_yes(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
     """
     This unit test checks that is_bugfix detects bug fixes when one of the bugfix keywords is used.
     """
@@ -88,7 +88,7 @@ def test_utilities_is_bugfix_Yes(utilities_bugfix_fixture: Callable[[None], Dict
         assert is_bugfix is True
 
 
-def test_utilities_is_bugfix_No(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
+def test_utilities_is_bugfix_no(utilities_bugfix_fixture: Callable[[None], Dict[str, str]]):
     """
     This unit test checks that is_bugfix does not detect bug fixes when none of the bug fix keywords are present.
     """
@@ -124,7 +124,7 @@ def test_utilities_change_type_as_string():
     assert results[5] == "UNKNOWN"
 
 
-def test_utilities_get_file_type_Production():
+def test_utilities_get_file_type_production():
     """
     This unit test checks that get_file_type returns "Production" when the file name does not contain "test".
     """
@@ -134,7 +134,7 @@ def test_utilities_get_file_type_Production():
     assert utilities.get_file_type(file_name) == "Production"
 
 
-def test_utilities_get_file_type_Test1():
+def test_utilities_get_file_type_test1():
     """
     This unit test checks that get_file_type returns "Test" when the file name contains "test"
     at the end of the file name.
@@ -145,7 +145,7 @@ def test_utilities_get_file_type_Test1():
     assert utilities.get_file_type(file_name) == "Test"
 
 
-def test_utilities_get_file_type_Test2():
+def test_utilities_get_file_type_test2():
     """
     This unit test checks that get_file_type returns "Test" when the file name contains "test"
     in the middle of the file name.
@@ -156,7 +156,7 @@ def test_utilities_get_file_type_Test2():
     assert utilities.get_file_type(file_name) == "Test"
 
 
-def test_utilities_keyword_match_found_Yes():
+def test_utilities_keyword_match_found_yes():
     """
     This unit test checks that keyword_match_found returns True when "string" contains one of the words
     in keywords_list.
@@ -169,7 +169,7 @@ def test_utilities_keyword_match_found_Yes():
     assert utilities.keyword_match_found(keywords_list, string) is True
 
 
-def test_utilities_keyword_match_found_No():
+def test_utilities_keyword_match_found_no():
     """
     This unit test checks that keyword_match_found returns False when "string" does not contain one of
     the words in keywords_list.
@@ -182,7 +182,29 @@ def test_utilities_keyword_match_found_No():
     assert utilities.keyword_match_found(keywords_list, string) is False
 
 
-def test_is_single_repository_No():
+def test_short_method_name_contains_double_colon_yes():
+    """
+    This unit test checks that short_method_name returns the short method name if method_name contains "::".
+    """
+    
+    long_method_name = "myclass::mymethod"
+    
+    assert utilities.short_method_name(long_method_name) == "mymethod"
+
+
+def test_short_method_name_contains_double_colon_no():
+    """
+    This unit test checks that short_method_name does not alter the method name if method_name does not
+    contains"::".
+    """
+    
+    long_method_name = "myclass_mymethod"
+    
+    assert utilities.short_method_name(long_method_name) == long_method_name
+
+
+
+def test_is_single_repository_no():
     """
     This unit test checks that is_single_repository returns False when repo_path does not point to a single
     repository.

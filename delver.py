@@ -131,10 +131,10 @@ class Delver:
                     
                     # Create the methods dataset (process all the methods contained in the file).
                     for method in file.methods:
-                        methods_rows.append((self.repository_name, branches, nb_branches, file_path, method.filename, file_type, method.name,
-                                            len(method.parameters), method.nloc, method.complexity,                                        
-                                            commit.hash, commit.author.name, commit.author_date, commit_date,
-                                            commit_hour_of_day))
+                        methods_rows.append((self.repository_name, branches, nb_branches, file_path, method.filename, file_type,
+                                             utilities.short_method_name(method.name), len(method.parameters), method.nloc,
+                                             method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
+                                             commit_hour_of_day))
                     
                     # Create the files dataset.
                     files_rows.append((self.repository_name, branches, nb_branches, file_path, file.filename, file_extension, file_type, change_type,

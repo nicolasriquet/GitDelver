@@ -83,6 +83,18 @@ def change_type_as_string(modification_type_enum_value: enum) -> str:
     return change_type
 
 
+def short_method_name(method_name: str) -> str:
+    """
+    This function takes a long method name like "class_name::method_name" and return the short method
+    name without the class prefix and the "::" separator.
+    """
+    
+    if "::" not in method_name:
+        return method_name
+    
+    return method_name.split("::",1)[1] 
+
+
 def is_single_repository(repo_path: str) -> bool:
     """
     This function returns True if repo_path points to a single repository (regular or bare) rather than a
