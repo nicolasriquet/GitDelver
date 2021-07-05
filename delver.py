@@ -80,6 +80,9 @@ class Delver:
                            "Complexity", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
         methods_rows = []
         
+        analysis_errors_rows = []
+        analysis_errors_columns = ["Repository", "SkippedModificationFilePath", "SkippedModificationFileName", "CommitId"]
+        
         SATD_keywords = config_params["SATD_keywords"]
         bugfix_keywords = config_params["bugfix_keywords"]
 
@@ -130,7 +133,18 @@ class Delver:
                     commit_contains_SATD = file_contains_SATD
                     
                     # Create the methods dataset (process all the methods contained in the file).
-                    for method in file.methods:
+                    try:
+                        file_methods = file.methods
+                        file_changed_methods = file.changed_methods
+                    except:
+                        # RecursionError bug in Lizard library for some (obfuscated / uglified) JavaScript files => skip the files entirely and
+                        # add them to the dataset of errors.
+                        analysis_errors_rows.append((self.repository_name, file_path, file.filename, commit.hash))
+                        self.log("!!! Impossible to analyze the methods of file '{}' in commit {} from repository {}.Skipping file modification altogether...".format(file.filename, 
+                                                                                                                                                  commit.hash, self.repository_name.upper()))
+                        continue
+                    
+                    for method in file_methods:
                         methods_rows.append((self.repository_name, branches, nb_branches, file_path, method.filename, file_type,
                                              utilities.short_method_name(method.name), len(method.parameters), method.nloc,
                                              method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
@@ -138,7 +152,7 @@ class Delver:
                     
                     # Create the files dataset.
                     files_rows.append((self.repository_name, branches, nb_branches, file_path, file.filename, file_extension, file_type, change_type,
-                                       len(file.methods), len(file.changed_methods), file.nloc,
+                                       len(file_methods), len(file_changed_methods), file.nloc,
                                        file.complexity, file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash,
                                        commit.author.name, commit.author_date, commit_date, commit_hour_of_day))
             
@@ -154,6 +168,10 @@ class Delver:
             DataSet("files_history", pd.DataFrame(files_rows, columns=files_columns)),
             DataSet("methods_history", pd.DataFrame(methods_rows, columns=methods_columns))
             ]
+        
+        # Add the the dataset of errors if there were analysis problems. 
+        if len(analysis_errors_rows) > 0:
+            datasets.append(DataSet("analysis_errors", pd.DataFrame(analysis_errors_rows, columns=analysis_errors_columns)))
         
         return datasets
         
@@ -188,4 +206,4 @@ class Delver:
         
         if self.log is not None:
             end_time = datetime.now()
-            self.log("Analysis of repository {} complete. Processed {} commits in {}".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))
+            self.log("Analysis of repository {} complete. Processed {} commits in {}.".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))

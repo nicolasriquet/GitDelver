@@ -93,10 +93,10 @@ if __name__ == "__main__":
         nb_cores = mp.cpu_count()
         nb_processes = nb_processes_config if (nb_processes_config >= 1 and nb_processes_config <= nb_cores) else nb_cores
     
-        utilities._log("Starting {} delving processes on the repositories located at {}".format(nb_processes, repo_path))
+        utilities._log("Starting {} delving processes on the repositories located at {}.".format(nb_processes, repo_path))
         
         pool = mp.Pool(nb_processes)
         pool.map(_go_delving, repositories_list)
     
     end_time = datetime.now()
-    utilities._log("Mining process completed in {}".format(end_time - start_time))
+    utilities._log("Mining process completed in {}.".format(end_time - start_time))

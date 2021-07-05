@@ -6,7 +6,7 @@ Copyright (c) 2021 Nicolas Riquet
 
 ## Generated datasets
 
-**GitDelver** produces the following datasets *for each processed repository* (i.e., 3 datasets are generated for each repository).
+**GitDelver** produces the following datasets *for each processed repository*. In nominal cases, three datasets are generated for each repository. A fourth dataset may be generated on the rare occasion that a supported file could not be analyzed (this occurs for some obfuscated / uglified JavaScript files).
 
 ### commits_history
 
@@ -36,7 +36,7 @@ Copyright (c) 2021 Nicolas Riquet
 
 *files_history* has the following columns:
 
-* Repository: the name of the repository
+* Repository: the name of the repository.
 * Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * FilePath: the relative path to file.
@@ -62,7 +62,7 @@ Copyright (c) 2021 Nicolas Riquet
 
 *methods_history* has the following columns:
 
-* Repository: the name of the repository
+* Repository: the name of the repository.
 * Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * FilePath: the relative path to file.
@@ -77,6 +77,17 @@ Copyright (c) 2021 Nicolas Riquet
 * DateTime: the date and time of the modification.
 * Date: the date of the modification.
 * HourOfDay: the hour of the day at which the modification took place.
+
+### analysis_errors (this is generated only in the case of rare analysis errors)
+
+A fourth dataset may be generated on the rare occasion that a supported file could not be analyzed (this occurs for some obfuscated / uglified JavaScript files).
+
+*analysis_errors* has the following columns:
+
+* Repository: the name of the repository.
+* SkippedModificationFilePath: the relative path to file that could not be analyzed.
+* SkippedModificationFileName: the name of the file that could not be analyzed.
+* CommitId: the identifier of the commit.
 
 ## Requirements
 
@@ -102,7 +113,7 @@ The **GitDelver console program** can be used for either analyzing a single repo
 
 ### Use the GitDelver API from another Python tool (e.g., Jupyter notebook)
 
-You can also directly use the **GitDelver** API from another Python tool like a **Jupyter notebook**. **GitDelver** internally uses Pandas dataframes for storing and processing data and these dataframes can be obtained by directly calling the *delve* method of the *Delver* class. By doing this, you can use the datasets without having to first import CSV files.
+You can also directly use the **GitDelver** API from another Python tool like a **Jupyter notebook**. **GitDelver** internally uses Pandas dataframes for storing and processing data and these dataframes can be obtained by directly calling the *delve* method of the *Delver* class. By doing this, you can use the datasets without having to first import CSV files. Warning: the analysis process may take several hours on very large repositories and so this might not be practical in some cases.
 
 ## Configuration parameters to be set in *config.py*
 
