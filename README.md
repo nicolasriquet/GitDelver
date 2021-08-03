@@ -42,8 +42,8 @@ Copyright (c) 2021 Nicolas Riquet
 * FilePath: the relative path to file.
 * FileName: the name of the file.
 * FileExtension: the file extension.
-* FileType: the type of the file ("Production" or "Test")
-* ChangeType: the type of change ("ADD", "COPY", "RENAME", "DELETE", "MODIFY" or "UNKNOWN")
+* FileType: the type of the file ("Production" or "Test").
+* ChangeType: the type of change ("ADD", "COPY", "RENAME", "DELETE", "MODIFY" or "UNKNOWN").
 * NbMethods: the number of methods in the file.
 * NbMethodsChanged: the number of methods that have been modified in this file for this commit.
 * NLOC: the number of lines of code of the file.
@@ -51,8 +51,8 @@ Copyright (c) 2021 Nicolas Riquet
 * SATD: flag telling if the modification contains Self-Admitted Technical Debt.
 * SATDLine: the line that triggered the SATD flag.
 * NbLinesAdded: the number of lines added.
-* NbLinesDeleted the number of lines deleted.
-* CommitId: the identifier of the commit
+* NbLinesDeleted: the number of lines deleted.
+* CommitId: the identifier of the commit.
 * Author: the author of the modification.
 * DateTime: the date and time of the modification.
 * Date: the date of the modification.
@@ -67,12 +67,12 @@ Copyright (c) 2021 Nicolas Riquet
 * NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * FilePath: the relative path to file.
 * FileName: the name of the file.
-* FileType: the type of the file ("Production" or "Test")
+* FileType: the type of the file ("Production" or "Test").
 * MethodName: the name of the method.
 * NbParams: the number of parameters in the method signature.
 * NLOC: the number of lines of code of the file.
 * Complexity: the cyclomatic complexity number of the method.
-* CommitId: the identifier of the commit
+* CommitId: the identifier of the commit.
 * Author: the author of the modification.
 * DateTime: the date and time of the modification.
 * Date: the date of the modification.
@@ -93,7 +93,7 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
 
 **GitDelver** requires that the following software be installed in your environment:
 
-* Python 3.6+
+* Python 3.6+.
 * PyDriller 2.0+ (use pip or conda to install it).
 * Pandas 1.2+ (use pip or conda to install it).
 
