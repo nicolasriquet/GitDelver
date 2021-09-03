@@ -92,11 +92,11 @@ class Delver:
                            "Merge", "BugFix", "SATD", "NbModifiedFiles", "ModifiedFiles", "NbModifiedProdSourceFiles",
                            "NbModifiedTestSourceFiles", "NbModifications", "NbInsertions", "NbDeletions"]
         commits_rows = []        
-        files_columns = ["Repository", "Branches", "NbBranches", "FilePath", "FileName", "FileExtension", "FileType", "ChangeType",
+        files_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileExtension", "FileType", "ChangeType",
                          "NbMethods", "NbMethodsChanged", "NLOC", "Complexity", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId",
                          "Author", "DateTime", "Date", "HourOfDay"]        
         files_rows = []        
-        methods_columns = ["Repository", "Branches", "NbBranches", "FilePath", "FileName", "FileType", "MethodName", "NbParams", "NLOC", 
+        methods_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileType", "MethodName", "NbParams", "NLOC", 
                            "Complexity", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
         methods_rows = []
         
@@ -113,7 +113,7 @@ class Delver:
             
             # Prints progression messages if verbore mode is set.
             if (self.log is not None and self.verbose and self._commits_processed % 10 == 0):
-                self.log("Processed {} commits from repository {}. Continuing...".format(self._commits_processed, self.repository_name.upper()), True)
+                self.log("Processed {} commits from {}. Continuing...".format(self._commits_processed, self.repository_name.upper()), True)
             
             # Process the commit.
             branches = str(commit.branches)
@@ -136,11 +136,6 @@ class Delver:
                 file_extension = Path(file.filename).suffix
                 
                 if (self.keep_unsupported_files or file.language_supported):
-                    if (file.new_path is not None):
-                        file_path = file.new_path
-                    else:
-                        file_path = file.old_path
-                                                    
                     change_type = utilities.change_type_as_string(file.change_type)                
                     file_type = utilities.get_file_type(file.filename)
                     
@@ -159,19 +154,19 @@ class Delver:
                     except:
                         # RecursionError bug in Lizard library for some (obfuscated / uglified) JavaScript files => skip the files entirely and
                         # add them to the dataset of errors.
-                        analysis_errors_rows.append((self.repository_name, file_path, file.filename, commit.hash))
-                        self.log("!!! Impossible to analyze the methods of file '{}' in commit {} from repository {}.Skipping file modification altogether...".format(file.filename, 
+                        analysis_errors_rows.append((self.repository_name, file.old_path, file.filename, commit.hash))
+                        self.log("!!! Impossible to analyze the methods of file '{}' in commit {} from {}.Skipping file modification altogether...".format(file.filename, 
                                                                                                                                                   commit.hash, self.repository_name.upper()))
                         continue
                     
                     for method in file_methods:
-                        methods_rows.append((self.repository_name, branches, nb_branches, file_path, method.filename, file_type,
+                        methods_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, method.filename, file_type,
                                              utilities.short_method_name(method.name), len(method.parameters), method.nloc,
                                              method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
                                              commit_hour_of_day))
                     
                     # Create the files dataset.
-                    files_rows.append((self.repository_name, branches, nb_branches, file_path, file.filename, file_extension, file_type, change_type,
+                    files_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, file.filename, file_extension, file_type, change_type,
                                        len(file_methods), len(file_changed_methods), file.nloc,
                                        file.complexity, file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash,
                                        commit.author.name, commit.author_date, commit_date, commit_hour_of_day))
@@ -218,7 +213,7 @@ class Delver:
         
         if self.log is not None:        
             start_time = datetime.now()
-            self.log("Starting delving into repository {}. This operation may take several minutes...".format(self.repository_name.upper()))
+            self.log("Starting delving into {}. This operation may take several minutes...".format(self.repository_name.upper()))
         
         datasets = self.delve()
         
@@ -226,4 +221,4 @@ class Delver:
         
         if self.log is not None:
             end_time = datetime.now()
-            self.log("Analysis of repository {} complete. Processed {} commits in {}.".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))
+            self.log("Analysis of {} complete. Processed {} commits in {}.".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))

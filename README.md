@@ -39,7 +39,8 @@ Copyright (c) 2021 Nicolas Riquet
 * Repository: the name of the repository.
 * Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
-* FilePath: the relative path to file.
+* OldFilePath: the old relative path to the file.
+* FilePath: the relative path to the file.
 * FileName: the name of the file.
 * FileExtension: the file extension.
 * FileType: the type of the file ("Production" or "Test").
@@ -65,7 +66,8 @@ Copyright (c) 2021 Nicolas Riquet
 * Repository: the name of the repository.
 * Branches: the list of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
 * NbBranches: the number of branches in which this modification has been integrated. Make sure you have done a *git checkout* on all the branches that you want to analyze (all branches will be analyzed if you target a bare repository).
-* FilePath: the relative path to file.
+* OldFilePath: the old relative path to the file.
+* FilePath: the relative path to the file.
 * FileName: the name of the file.
 * FileType: the type of the file ("Production" or "Test").
 * MethodName: the name of the method.
@@ -109,7 +111,7 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
 
 ### GitDelver console program
 
-The **GitDelver console program** can be used for either analyzing a single repository or multiple repositories in bulk. This is the default mode. It both analyzes the repositories and produces the aforementioned CSV files. Please note that it is required that your first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply run a terminal, go to your local **GitDelver** folder and enter the following command *python gitdelver*.
+The **GitDelver console program** can be used for either analyzing a single repository or multiple repositories in bulk. This is the default mode. It both analyzes the repositories and produces the aforementioned CSV files. Please note that it is required that your first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply run a terminal, go to your local **GitDelver** folder and enter the following command *python gitdelver.py*.
 
 ### Use the GitDelver API from another Python tool (e.g., Jupyter notebook)
 
