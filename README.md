@@ -2,7 +2,7 @@
 
 Copyright (c) 2021 Nicolas Riquet
 
-**GitDelver** is a Python tool for analyzing Git repositories in bulk and generating various datasets for research purposes. It basically analyzes all commits, modified files and modified methods, performs a set of analyses and then produces several CSV files containing all the generated data.
+**GitDelver** is a Python tool for analyzing Git repositories in bulk and generating various datasets for research purposes. It processes all commits, modified files and modified methods, performs a set of analyses and then produces several datasets (CSV files).
 
 ## Generated datasets
 
@@ -48,7 +48,9 @@ Copyright (c) 2021 Nicolas Riquet
 * NbMethods: the number of methods in the file.
 * NbMethodsChanged: the number of methods that have been modified in this file for this commit.
 * NLOC: the number of lines of code of the file.
-* Complexity: the cyclomatic complexity number of the file.
+* Complexity: the Weighted Methods per Class complexity, i.e., the sum of the cyclomatic complexity numbers of all the methods of the file.
+* NlocDivByNbMethods: the number of lines of code of the file divided by the number of methods of the file.
+* ComplexDivByNbMethods: the complexity of the file divided by the number of methods of the file.
 * SATD: flag telling if the modification contains Self-Admitted Technical Debt.
 * SATDLine: the line that triggered the SATD flag.
 * NbLinesAdded: the number of lines added.
@@ -107,15 +109,7 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
 
 ## Usage
 
-**GitDelver** can be used in two ways.
-
-### GitDelver console program
-
-The **GitDelver console program** can be used for either analyzing a single repository or multiple repositories in bulk. This is the default mode. It both analyzes the repositories and produces the aforementioned CSV files. Please note that it is required that your first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply run a terminal, go to your local **GitDelver** folder and enter the following command *python gitdelver.py*.
-
-### Use the GitDelver API from another Python tool (e.g., Jupyter notebook)
-
-You can also directly use the **GitDelver** API from another Python tool like a **Jupyter notebook**. **GitDelver** internally uses Pandas dataframes for storing and processing data and these dataframes can be obtained by directly calling the *delve* method of the *Delver* class. By doing this, you can use the datasets without having to first import CSV files. Warning: the analysis process may take several hours on very large repositories and so this might not be practical in some cases.
+**GitDelver** can be used for either analyzing a single repository or multiple repositories in bulk. Please note that it is required that you first **set a few configuration parameters (mainly folder paths) in the *config.py* file** before launching the application (further information is provided below and in the configuration file itself). To run the **GitDelver** console program, simply launch a terminal, go to your local **GitDelver** folder and run the following command *python gitdelver.py*.
 
 ## Configuration parameters to be set in *config.py*
 

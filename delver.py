@@ -92,9 +92,11 @@ class Delver:
                            "Merge", "BugFix", "SATD", "NbModifiedFiles", "ModifiedFiles", "NbModifiedProdSourceFiles",
                            "NbModifiedTestSourceFiles", "NbModifications", "NbInsertions", "NbDeletions"]
         commits_rows = []        
-        files_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileExtension", "FileType", "ChangeType",
-                         "NbMethods", "NbMethodsChanged", "NLOC", "Complexity", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId",
-                         "Author", "DateTime", "Date", "HourOfDay"]        
+        files_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileExtension", "FileType", 
+                         "ChangeType", "NbMethods", "NbMethodsChanged", "NLOC", "Complexity", "NlocDivByNbMethods", 
+                         "ComplexDivByNbMethods", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId", "Author", "DateTime", 
+                         "Date", "HourOfDay"]
+        
         files_rows = []        
         methods_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileType", "MethodName", "NbParams", "NLOC", 
                            "Complexity", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
@@ -139,17 +141,22 @@ class Delver:
                     change_type = utilities.change_type_as_string(file.change_type)                
                     file_type = utilities.get_file_type(file.filename)
                     
+                    # Determine the type of the file.
                     if (file_type == "Production"):
                         commit_nb_prod_files += 1
+                        
                     elif (file_type == "Test"):
                         commit_nb_test_files += 1
                     
+                    # Determine if there is self-admitted technical debt.
                     file_contains_SATD, SATDLine = utilities.is_SATD(SATD_keywords, file.diff_parsed)
                     commit_contains_SATD = file_contains_SATD
                     
                     # Create the methods dataset (process all the methods contained in the file).
                     try:
                         file_methods = file.methods
+                        nb_methods = len(file_methods)
+                        
                         file_changed_methods = file.changed_methods
                     except:
                         # RecursionError bug in Lizard library for some (obfuscated / uglified) JavaScript files => skip the files entirely and
@@ -159,25 +166,34 @@ class Delver:
                                                                                                                                                   commit.hash, self.repository_name.upper()))
                         continue
                     
+                    # Calculate derived metrics based on NLOC/Complexity and the number of methods.
+                    try:                    
+                        nloc_div_by_nb_methods = round(file.nloc / nb_methods, 2)
+                        complex_div_by_nb_methods = round(file.complexity / nb_methods, 2)
+                    except:
+                        nloc_div_by_nb_methods = 0.00
+                        complex_div_by_nb_methods = 0.00
+                    
                     for method in file_methods:
+                        # Create the method dataset.
                         methods_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, method.filename, file_type,
                                              utilities.short_method_name(method.name), len(method.parameters), method.nloc,
                                              method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
                                              commit_hour_of_day))
                     
-                    # Create the files dataset.
+                    # Create the file dataset.
                     files_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, file.filename, file_extension, file_type, change_type,
-                                       len(file_methods), len(file_changed_methods), file.nloc,
-                                       file.complexity, file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash,
-                                       commit.author.name, commit.author_date, commit_date, commit_hour_of_day))
+                                       nb_methods, len(file_changed_methods), file.nloc, file.complexity, nloc_div_by_nb_methods, complex_div_by_nb_methods, 
+                                       file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash, commit.author.name, commit.author_date, 
+                                       commit_date, commit_hour_of_day))
             
-            # Create the commits dataset.
+            # Create the commit dataset.
             commits_rows.append((self.repository_name, branches, nb_branches, commit.hash, commit.msg, commit.author.name, commit.author_date,
                                  commit_date, commit_hour_of_day, commit.merge, commit_is_bugfix, commit_contains_SATD, commit.files,
                                  "\n".join(list_of_file_names), commit_nb_prod_files, commit_nb_test_files, commit.lines,
                                  commit.insertions, commit.deletions))
         
-        # Build the datasets.
+        # Build the datasets collection.
         datasets = [
             DataSet("commits_history", pd.DataFrame(commits_rows, columns=commits_columns)),
             DataSet("files_history", pd.DataFrame(files_rows, columns=files_columns)),

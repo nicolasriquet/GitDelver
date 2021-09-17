@@ -89,7 +89,7 @@ def test_delver_delve_datasets_shapes(delver_fixture: Callable[[None], List[pd.D
     test_pass = False
     
     if (datasets[0].dataframe.shape == (5, 19) and
-        datasets[1].dataframe.shape == (6, 22) and
+        datasets[1].dataframe.shape == (6, 24) and
         datasets[2].dataframe.shape == (70, 16)):
         test_pass = True
     
