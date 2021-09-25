@@ -229,7 +229,7 @@ class Delver:
         
         if self.log is not None:        
             start_time = datetime.now()
-            self.log("Starting delving into {}. This operation may take several minutes...".format(self.repository_name.upper()))
+            self.log("Starting delving into {}. This operation may take several minutes/hours depending on the size of the repository...".format(self.repository_name.upper()))
         
         datasets = self.delve()
         
