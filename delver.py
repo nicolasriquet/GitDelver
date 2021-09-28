@@ -49,14 +49,15 @@ class Delver:
     Main class of GitDelver. It does all the repository history processing.
     """
     
-    def __init__(self, repository_path: str, csv_output_folder_path: str = "", log: Callable[[str], None] = None, 
-                 keep_unsupported_files: bool = False, verbose: bool = True):
+    def __init__(self, repository_path: str, csv_output_folder_path: str = "", keep_unsupported_files: bool = False,
+                 analysis_mode = utilities.AnalysisMode.COMMITS_FILES, log: Callable[[str], None] = None,
+                 verbose: bool = True):
         """
         Constructor.
         
         Takes the path to the repository to be analyzed, the path where the CSV files are to be generated,
-        a logging function for reporting feedback, a boolean telling if unsupported files should be reported,
-        and a boolean telling if verbose mode should be used.
+        a boolean telling if unsupported files should be reported, an analysis mode,
+        a logging function for reporting feedback, and a boolean telling if verbose mode should be used.
         """
 
         self.repository_path = repository_path
@@ -69,9 +70,12 @@ class Delver:
         
         self.csv_output_folder_path = csv_output_folder_path
         
+        self.keep_unsupported_files = keep_unsupported_files
+        
+        self.analysis_mode = analysis_mode
+        
         self.log = log
         
-        self.keep_unsupported_files = keep_unsupported_files
         self.verbose = verbose
         
         self._commits_processed = 0

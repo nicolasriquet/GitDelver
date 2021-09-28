@@ -24,6 +24,8 @@
 This module contains the configuration parameters used when GitDelver is launched.
 """
 
+from utilities import AnalysisMode
+
 config_params = {
     # File system path (using regular forward slashes, even on Windows so use C:/) 
     # to either a single Git repository to be analyzed or a folder
@@ -32,16 +34,22 @@ config_params = {
     # Example of structure for bulk analysis:
     # repositories_folder_path/repo 1/(.git + code files, or bare repo content)
     # repositories_folder_path/repo N/(.git + code files, or bare repo content)
-    "repo_path": "ENTER FILE SYSTEM PATH HERE",
+    "repo_path": r"ENTER FILE SYSTEM PATH HERE",
     
     # File system path (using regular forward slashes, even on Windows so use C:/) 
     # to the folder where the generated CSV files are to be created.
-    "csv_output_folder_path": "ENTER FILE SYSTEM PATH HERE",
+    "csv_output_folder_path": r"ENTER FILE SYSTEM PATH HERE",
     
     # GitDelver uses some advanced features of PyDriller that are only available for
     # supported file types (i.e. most common source code files).
     # Set this option to True if you want GitDelver to report unsupported files as well.
     "keep_unsupported_files": False,
+    
+    # GitDelver supports three modes of analysis:
+    # AnalysisMode.COMMITS: produces only the 'commits_history' dataset.
+    # AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. CAN TAKE SOME TIME!
+    # AnalysisMode. COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. CAN TAKE A VERY LONG TIME!
+    "analysis_mode": AnalysisMode.COMMITS_FILES,
     
     # GitDelver uses Python multiprocessing for analyzing multiple repositories at once.
     # Nowadays, most computers have at least 4 virtual CPUs, so this is the default value.

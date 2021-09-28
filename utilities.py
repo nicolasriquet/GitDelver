@@ -21,14 +21,22 @@
 # SOFTWARE.
 
 """
-This module contains all utility functions used by GitDelver.
+This module contains all utility types and functions used by GitDelver.
 """
 
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Tuple
-import enum
+from enum import Enum
+
+class AnalysisMode(Enum):
+    """
+    Used to set the mode of the analysis: commits only, commits and files, commits and files and methods.
+    """
+    COMMITS = 1
+    COMMITS_FILES = 2
+    COMMITS_FILES_METHODS = 3
 
 
 def get_file_type(file_name: str) -> str:
@@ -79,7 +87,7 @@ def is_SATD(SATD_keywords: List[str], dict_of_modified_lines: Dict[str, List[tup
     return False, ""
 
 
-def change_type_as_string(modification_type_enum_value: enum) -> str:
+def change_type_as_string(modification_type_enum_value: Enum) -> str:
     """
     Returns a string representing the value of PyDriller's ModificationType enum. 
     PyDriller does not make this enum publicly available to the outside world.

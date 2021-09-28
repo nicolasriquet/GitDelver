@@ -44,6 +44,7 @@ def _check_config_params(params: config_params):
         params["repo_path"]
         params["csv_output_folder_path"]
         params["keep_unsupported_files"]
+        params["analysis_mode"]
         params["nb_processes"]
         params["verbose"]
     except:
@@ -60,9 +61,11 @@ def _check_config_params(params: config_params):
     if not isinstance(params["keep_unsupported_files"], bool):
         utilities._handle_error("Configuration parameter \"keep_unsupported_files\" has an invalid value")
     
-    nb_processes = params["nb_processes"]
+    if (params["analysis_mode"] not in [utilities.AnalysisMode.COMMITS, utilities.AnalysisMode.COMMITS_FILES,
+                                        utilities.AnalysisMode.COMMITS_FILES_METHODS]):
+        utilities._handle_error("Configuration parameter \"analysis_mode\" has an invalid value")
     
-    if not isinstance(nb_processes, int) or nb_processes <= 1:
+    if not isinstance(params["nb_processes"], int) or params["nb_processes"] <= 1:
         utilities._handle_error("Configuration parameter \"nb_processes\" has an invalid value")
     
     if not isinstance(params["verbose"], bool):
@@ -85,7 +88,7 @@ def _go_delving(repo_path: str):
     keep_unsupported_files = config_params["keep_unsupported_files"]
     verbose = config_params["verbose"]
     
-    gitdelver = Delver(repo_path, csv_output_folder_path, utilities._log, keep_unsupported_files, verbose)
+    gitdelver = Delver(repo_path, csv_output_folder_path, keep_unsupported_files, utilities._log, verbose)
     gitdelver.run()
 
 
