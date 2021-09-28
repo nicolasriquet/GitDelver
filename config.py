@@ -27,8 +27,7 @@ This module contains the configuration parameters used when GitDelver is launche
 from utilities import AnalysisMode
 
 config_params = {
-    # File system path (using regular forward slashes, even on Windows so use C:/) 
-    # to either a single Git repository to be analyzed or a folder
+    # File system path to either a single Git repository to be analyzed or a folder
     # containing multiple repositories to be processed in bulk. In the latter case, 
     # each subfolder is assumed to be a regular directory containing a .git folder.
     # Example of structure for bulk analysis:
@@ -36,8 +35,7 @@ config_params = {
     # repositories_folder_path/repo N/(.git + code files, or bare repo content)
     "repo_path": r"ENTER FILE SYSTEM PATH HERE",
     
-    # File system path (using regular forward slashes, even on Windows so use C:/) 
-    # to the folder where the generated CSV files are to be created.
+    # File system path to the folder where the generated CSV files are to be created.
     "csv_output_folder_path": r"ENTER FILE SYSTEM PATH HERE",
     
     # GitDelver uses some advanced features of PyDriller that are only available for

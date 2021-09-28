@@ -135,61 +135,63 @@ class Delver:
             commit_contains_SATD = False
             commit_is_bugfix = utilities.is_bugfix(bugfix_keywords, commit.msg)
             
-            # Process all the files contained in the commit.
-            for file in commit.modified_files:
-                list_of_file_names.append(file.filename)
-                
-                file_extension = Path(file.filename).suffix
-                
-                if (self.keep_unsupported_files or file.language_supported):
-                    change_type = utilities.change_type_as_string(file.change_type)                
-                    file_type = utilities.get_file_type(file.filename)
+            if (self.analysis_mode in [utilities.AnalysisMode.COMMITS_FILES, utilities.AnalysisMode.COMMITS_FILES_METHODS]):
+                # Process all the files contained in the commit.
+                for file in commit.modified_files:
+                    list_of_file_names.append(file.filename)
                     
-                    # Determine the type of the file.
-                    if (file_type == "Production"):
-                        commit_nb_prod_files += 1
+                    file_extension = Path(file.filename).suffix
+                    
+                    if (self.keep_unsupported_files or file.language_supported):
+                        change_type = utilities.change_type_as_string(file.change_type)                
+                        file_type = utilities.get_file_type(file.filename)
                         
-                    elif (file_type == "Test"):
-                        commit_nb_test_files += 1
-                    
-                    # Determine if there is self-admitted technical debt.
-                    file_contains_SATD, SATDLine = utilities.is_SATD(SATD_keywords, file.diff_parsed)
-                    commit_contains_SATD = file_contains_SATD
-                    
-                    # Create the methods dataset (process all the methods contained in the file).
-                    try:
-                        file_methods = file.methods
-                        nb_methods = len(file_methods)
+                        # Determine the type of the file.
+                        if (file_type == "Production"):
+                            commit_nb_prod_files += 1
+                            
+                        elif (file_type == "Test"):
+                            commit_nb_test_files += 1
                         
-                        file_changed_methods = file.changed_methods
-                    except:
-                        # RecursionError bug in Lizard library for some (obfuscated / uglified) JavaScript files => skip the files entirely and
-                        # add them to the dataset of errors.
-                        analysis_errors_rows.append((self.repository_name, file.old_path, file.filename, commit.hash))
-                        self.log("!!! Impossible to analyze the methods of file '{}' in commit {} from {}.Skipping file modification altogether...".format(file.filename, 
-                                                                                                                                                  commit.hash, self.repository_name.upper()))
-                        continue
-                    
-                    # Calculate derived metrics based on NLOC/Complexity and the number of methods.
-                    try:                    
-                        nloc_div_by_nb_methods = round(file.nloc / nb_methods, 2)
-                        complex_div_by_nb_methods = round(file.complexity / nb_methods, 2)
-                    except:
-                        nloc_div_by_nb_methods = 0.00
-                        complex_div_by_nb_methods = 0.00
-                    
-                    for method in file_methods:
-                        # Create the method dataset.
-                        methods_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, method.filename, file_type,
-                                             utilities.short_method_name(method.name), len(method.parameters), method.nloc,
-                                             method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
-                                             commit_hour_of_day))
-                    
-                    # Create the file dataset.
-                    files_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, file.filename, file_extension, file_type, change_type,
-                                       nb_methods, len(file_changed_methods), file.nloc, file.complexity, nloc_div_by_nb_methods, complex_div_by_nb_methods, 
-                                       file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash, commit.author.name, commit.author_date, 
-                                       commit_date, commit_hour_of_day))
+                        # Determine if there is self-admitted technical debt.
+                        file_contains_SATD, SATDLine = utilities.is_SATD(SATD_keywords, file.diff_parsed)
+                        commit_contains_SATD = file_contains_SATD
+                        
+                        # Create the methods dataset (process all the methods contained in the file).
+                        try:
+                            file_methods = file.methods
+                            nb_methods = len(file_methods)
+                            
+                            file_changed_methods = file.changed_methods
+                        except:
+                            # RecursionError bug in Lizard library for some (obfuscated / uglified) JavaScript files => skip the files entirely and
+                            # add them to the dataset of errors.
+                            analysis_errors_rows.append((self.repository_name, file.old_path, file.filename, commit.hash))
+                            self.log("!!! Impossible to analyze the methods of file '{}' in commit {} from {}.Skipping file modification altogether...".format(file.filename, 
+                                                                                                                                                      commit.hash, self.repository_name.upper()))
+                            continue
+                        
+                        # Calculate derived metrics based on NLOC/Complexity and the number of methods.
+                        try:                    
+                            nloc_div_by_nb_methods = round(file.nloc / nb_methods, 2)
+                            complex_div_by_nb_methods = round(file.complexity / nb_methods, 2)
+                        except:
+                            nloc_div_by_nb_methods = 0.00
+                            complex_div_by_nb_methods = 0.00
+                        
+                        if (self.analysis_mode == utilities.AnalysisMode.COMMITS_FILES_METHODS):
+                            for method in file_methods:
+                                # Create the method dataset.
+                                methods_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, method.filename, file_type,
+                                                     utilities.short_method_name(method.name), len(method.parameters), method.nloc,
+                                                     method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
+                                                     commit_hour_of_day))
+                        
+                        # Create the file dataset.
+                        files_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, file.filename, file_extension, file_type, change_type,
+                                           nb_methods, len(file_changed_methods), file.nloc, file.complexity, nloc_div_by_nb_methods, complex_div_by_nb_methods, 
+                                           file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash, commit.author.name, commit.author_date, 
+                                           commit_date, commit_hour_of_day))
             
             # Create the commit dataset.
             commits_rows.append((self.repository_name, branches, nb_branches, commit.hash, commit.msg, commit.author.name, commit.author_date,
@@ -198,11 +200,13 @@ class Delver:
                                  commit.insertions, commit.deletions))
         
         # Build the datasets collection.
-        datasets = [
-            DataSet("commits_history", pd.DataFrame(commits_rows, columns=commits_columns)),
-            DataSet("files_history", pd.DataFrame(files_rows, columns=files_columns)),
-            DataSet("methods_history", pd.DataFrame(methods_rows, columns=methods_columns))
-            ]
+        datasets = [DataSet("commits_history", pd.DataFrame(commits_rows, columns=commits_columns))]
+        
+        if (self.analysis_mode in [utilities.AnalysisMode.COMMITS_FILES, utilities.AnalysisMode.COMMITS_FILES_METHODS]):
+            datasets.append(DataSet("files_history", pd.DataFrame(files_rows, columns=files_columns)))
+        
+        if (self.analysis_mode == utilities.AnalysisMode.COMMITS_FILES_METHODS):
+            datasets.append(DataSet("methods_history", pd.DataFrame(methods_rows, columns=methods_columns)))
         
         # Add the the dataset of errors if there were analysis problems. 
         if len(analysis_errors_rows) > 0:

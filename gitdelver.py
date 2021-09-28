@@ -86,9 +86,10 @@ def _go_delving(repo_path: str):
 
     csv_output_folder_path = config_params["csv_output_folder_path"]
     keep_unsupported_files = config_params["keep_unsupported_files"]
+    analysis_mode = config_params["analysis_mode"]
     verbose = config_params["verbose"]
     
-    gitdelver = Delver(repo_path, csv_output_folder_path, keep_unsupported_files, utilities._log, verbose)
+    gitdelver = Delver(repo_path, csv_output_folder_path, keep_unsupported_files, analysis_mode, utilities._log, verbose)
     gitdelver.run()
 
 

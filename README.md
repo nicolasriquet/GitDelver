@@ -34,6 +34,8 @@ Copyright (c) 2021 Nicolas Riquet
 
 ### files_history
 
+This dataset is produced if the 'analysis_mode' config parameter is set to AnalysisMode.COMMITS_FILES or AnalysisMode.COMMITS_FILES_METHODS.
+
 *files_history* has the following columns:
 
 * Repository: the name of the repository.
@@ -62,6 +64,8 @@ Copyright (c) 2021 Nicolas Riquet
 * HourOfDay: the hour of the day at which the modification took place.
 
 ### methods_history
+
+This dataset is produced if the 'analysis_mode' config parameter is set to AnalysisMode.COMMITS_FILES_METHODS.
 
 *methods_history* has the following columns:
 
@@ -113,11 +117,15 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
 
 ## Configuration parameters to be set in *config.py*
 
-* repo_path: file system path (using regular forward slashes) to either a single Git repository to be analyzed or a folder containing multiple repositories to be processed in bulk. In the latter case, each subfolder is assumed to be a regular directory containing a .git folder. Example of structure for bulk analysis:
+* repo_path: file system path to either a single Git repository to be analyzed or a folder containing multiple repositories to be processed in bulk. In the latter case, each subfolder is assumed to be a regular directory containing a .git folder. Example of structure for bulk analysis:
   * repositories_folder_path/repo 1/(.git + code files)
   * repositories_folder_path/repo N/(.git + code files)  
-* csv_output_folder_path: file system path (using regular forward slashes) to the folder where the generated CSV files are to be created.
+* csv_output_folder_path: file system path to the folder where the generated CSV files are to be created.
 * keep_unsupported_files: **GitDelver** uses some advanced features of PyDriller that are only available for supported file types (i.e. most common source code files). Set this option to True if you want **GitDelver** to report unsupported files as well.
+* analysis_mode: GitDelver supports three modes of analysis.
+  * AnalysisMode.COMMITS: produces only the 'commits_history' dataset.
+  * AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. CAN TAKE SOME TIME!
+  * AnalysisMode. COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. CAN TAKE A VERY LONG TIME!
 * nb_processes: **GitDelver** uses Python multiprocessing for analyzing multiple repositories at once. Nowadays, most computers have at least 4 virtual CPUs, so this is the default value. You can set it to less or more in function of your needs. **GitDelver** will check that the entered value is correct and will limit this parameter to the maximum number of available vitrtual CPUs.
 * verbose: this parameter sets the volume of feedback information provided by **GitDelver**. The analysis operation can take dozens of minutes for big repositories, so it is advised to set this to True in order to monitor its progression.
 * SATD_keywords: this parameter configures the keywords that should be used to detect Self-Admitted Technical Debt in the lines of code.

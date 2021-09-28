@@ -35,39 +35,93 @@ import pytest, os
 from delver import Delver
 import pandas as pd
 from typing import Callable, List
+import utilities
 
 
 @pytest.fixture
-def delver_fixture() -> List[pd.DataFrame]:
+def delver_COMMITS_FILES_METHODS_fixture() -> List[pd.DataFrame]:
     """
     This test fixture initializes the test repository.
     """
 
     current_dir = os.path.dirname(__file__)
+    repo_path = current_dir + "/test_repos/small_repo"
     
-    delver = Delver(current_dir + "/test_repos/small_repo")
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES_METHODS)
     
     datasets = delver.delve()
     
     return datasets
 
 
-def test_delver_delve_nb_datasets(delver_fixture: Callable[[None], List[pd.DataFrame]]):
+@pytest.fixture
+def delver_COMMITS_FILES_fixture() -> List[pd.DataFrame]:
+    """
+    This test fixture initializes the test repository.
+    """
+
+    current_dir = os.path.dirname(__file__)
+    repo_path = current_dir + "/test_repos/small_repo"
+    
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES)
+    
+    datasets = delver.delve()
+    
+    return datasets
+
+
+@pytest.fixture
+def delver_COMMITS_fixture() -> List[pd.DataFrame]:
+    """
+    This test fixture initializes the test repository.
+    """
+
+    current_dir = os.path.dirname(__file__)
+    repo_path = current_dir + "/test_repos/small_repo"
+    
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS)
+    
+    datasets = delver.delve()
+    
+    return datasets
+
+
+def test_delver_COMMITS_FILES_METHODS_delve_nb_datasets(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that Delver returns the expected number of datasets.
     """
     
-    datasets = delver_fixture
+    datasets = delver_COMMITS_FILES_METHODS_fixture
     
     assert len(datasets) == 3
 
 
-def test_delver_delve_datasets_names(delver_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_COMMITS_FILES_delve_nb_datasets(delver_COMMITS_FILES_fixture: Callable[[None], List[pd.DataFrame]]):
+    """
+    This unit test checks that Delver returns the expected number of datasets.
+    """
+    
+    datasets = delver_COMMITS_FILES_fixture
+    
+    assert len(datasets) == 2
+
+
+def test_delver_COMMITS_delve_nb_datasets(delver_COMMITS_fixture: Callable[[None], List[pd.DataFrame]]):
+    """
+    This unit test checks that Delver returns the expected number of datasets.
+    """
+    
+    datasets = delver_COMMITS_fixture
+    
+    assert len(datasets) == 1
+
+
+def test_delver_delve_datasets_names(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that the generated datasets have the expected names.
     """
     
-    datasets = delver_fixture
+    datasets = delver_COMMITS_FILES_METHODS_fixture
     
     test_pass = False
     
@@ -79,12 +133,12 @@ def test_delver_delve_datasets_names(delver_fixture: Callable[[None], List[pd.Da
     assert test_pass is True
 
 
-def test_delver_delve_datasets_shapes(delver_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_delve_datasets_shapes(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that the generated datasets have the expected shapes.
     """
     
-    datasets = delver_fixture
+    datasets = delver_COMMITS_FILES_METHODS_fixture
     
     test_pass = False
     
