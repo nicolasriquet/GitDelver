@@ -46,9 +46,14 @@ def _check_config_params(params: config_params):
         params["keep_unsupported_files"]
         params["analysis_mode"]
         params["nb_processes"]
+        params["nb_commits_before_checkpoint"]
         params["verbose"]
+        params["SATD_keywords"]
+        params["bugfix_keywords"]        
     except:
-        utilities._handle_error("Missing configuration parameter")
+        utilities._handle_error(("Missing configuration parameter. All of the following should be set: repo_path," 
+                                " csv_output_folder_path, keep_unsupported_files, analysis_mode, nb_processes," 
+                                " nb_commits_before_checkpoint, verbose, SATD_keywords, bugfix_keywords."))
     
     list_of_path_vars = ["repo_path", "csv_output_folder_path"]
     
@@ -67,6 +72,9 @@ def _check_config_params(params: config_params):
     
     if not isinstance(params["nb_processes"], int) or params["nb_processes"] <= 1:
         utilities._handle_error("Configuration parameter \"nb_processes\" has an invalid value")
+        
+    if not isinstance(params["nb_commits_before_checkpoint"], int) or params["nb_commits_before_checkpoint"] < 0:
+        utilities._handle_error("Configuration parameter \"nb_commits_before_checkpoint\" has an invalid value")
     
     if not isinstance(params["verbose"], bool):
         utilities._handle_error("Configuration parameter \"verbose\" has an invalid value")
@@ -87,9 +95,12 @@ def _go_delving(repo_path: str):
     csv_output_folder_path = config_params["csv_output_folder_path"]
     keep_unsupported_files = config_params["keep_unsupported_files"]
     analysis_mode = config_params["analysis_mode"]
+    nb_commits_before_checkpoint = config_params["nb_commits_before_checkpoint"]
     verbose = config_params["verbose"]
     
-    gitdelver = Delver(repo_path, csv_output_folder_path, keep_unsupported_files, analysis_mode, utilities._log, verbose)
+    gitdelver = Delver(repo_path, csv_output_folder_path, keep_unsupported_files, analysis_mode, 
+                       nb_commits_before_checkpoint, utilities._log, verbose)
+    
     gitdelver.run()
 
 

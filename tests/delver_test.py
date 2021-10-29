@@ -47,9 +47,9 @@ def delver_COMMITS_FILES_METHODS_fixture() -> List[pd.DataFrame]:
     current_dir = os.path.dirname(__file__)
     repo_path = current_dir + "/test_repos/small_repo"
     
-    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES_METHODS)
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES_METHODS, nb_commits_before_checkpoint = 0)
     
-    datasets = delver.delve()
+    datasets = delver.run()
     
     return datasets
 
@@ -63,9 +63,9 @@ def delver_COMMITS_FILES_fixture() -> List[pd.DataFrame]:
     current_dir = os.path.dirname(__file__)
     repo_path = current_dir + "/test_repos/small_repo"
     
-    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES)
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS_FILES, nb_commits_before_checkpoint = 0)
     
-    datasets = delver.delve()
+    datasets = delver.run()
     
     return datasets
 
@@ -79,9 +79,9 @@ def delver_COMMITS_fixture() -> List[pd.DataFrame]:
     current_dir = os.path.dirname(__file__)
     repo_path = current_dir + "/test_repos/small_repo"
     
-    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS)
+    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS, nb_commits_before_checkpoint = 0)
     
-    datasets = delver.delve()
+    datasets = delver.run()
     
     return datasets
 

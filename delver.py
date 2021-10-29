@@ -50,8 +50,8 @@ class Delver:
     """
     
     def __init__(self, repository_path: str, csv_output_folder_path: str = "", keep_unsupported_files: bool = False,
-                 analysis_mode = utilities.AnalysisMode.COMMITS_FILES, log: Callable[[str], None] = None,
-                 verbose: bool = True):
+                 analysis_mode = utilities.AnalysisMode.COMMITS_FILES, nb_commits_before_checkpoint: int = 50,
+                 log: Callable[[str], None] = None, verbose: bool = True):
         """
         Constructor.
         
@@ -68,60 +68,53 @@ class Delver:
         except Exception as ex:
             utilities._handle_error(ex)
         
-        self.csv_output_folder_path = csv_output_folder_path
-        
-        self.keep_unsupported_files = keep_unsupported_files
-        
-        self.analysis_mode = analysis_mode
-        
-        self.log = log
-        
+        self.csv_output_folder_path = csv_output_folder_path        
+        self.keep_unsupported_files = keep_unsupported_files        
+        self.analysis_mode = analysis_mode        
+        self.nb_commits_before_checkpoint = nb_commits_before_checkpoint        
+        self.log = log        
         self.verbose = verbose
         
         self._commits_processed = 0
-
+        self._is_first_write = True
+        
     
-    def delve(self) -> List[DataSet]:
+    def run(self) -> List[DataSet]:
         """
         Main method of GitDelver. It traverses all the repository commits, files and methods, and returns a list of datasets
-        caontained in Pandas dataframes. The use of Pandas dataframes does not slow down the generation of CSV files by the
-        GitDelver console application but it does increade the memory usage as the entire datasets are stored in memory before
-        being written to files. The advantage of this implementation is that it supports the use case of people who want to
-        directly analyze a single Git repository from their Jupyter notebooks and who do not wish to process several repositories
-        in bulk with the GitDelver console application.
+        caontained in Pandas dataframes.
         """
         
         # Preparation of the datasets.
         commits_columns = ["Repository", "Branches", "NbBranches", "CommitId", "Message", "Author", "DateTime", "Date", "HourOfDay",
                            "Merge", "BugFix", "SATD", "NbModifiedFiles", "ModifiedFiles", "NbModifiedProdSourceFiles",
                            "NbModifiedTestSourceFiles", "NbModifications", "NbInsertions", "NbDeletions"]
-        commits_rows = []        
+        
         files_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileExtension", "FileType", 
                          "ChangeType", "NbMethods", "NbMethodsChanged", "NLOC", "Complexity", "NlocDivByNbMethods", 
                          "ComplexDivByNbMethods", "SATD", "SATDLine", "NbLinesAdded","NbLinesDeleted", "CommitId", "Author", "DateTime", 
                          "Date", "HourOfDay"]
         
-        files_rows = []        
         methods_columns = ["Repository", "Branches", "NbBranches", "OldFilePath", "FilePath", "FileName", "FileType", "MethodName", "NbParams", "NLOC", 
                            "Complexity", "CommitId", "Author","DateTime", "Date", "HourOfDay"]
-        methods_rows = []
         
-        analysis_errors_rows = []
         analysis_errors_columns = ["Repository", "SkippedModificationFilePath", "SkippedModificationFileName", "CommitId"]
+        
+        commits_rows = []
+        files_rows = []
+        methods_rows = []
+        analysis_errors_rows = []
         
         SATD_keywords = config_params["SATD_keywords"]
         bugfix_keywords = config_params["bugfix_keywords"]
+        
+        if self.log is not None:        
+            start_time = datetime.now()
+            self.log("Starting delving into {}. This operation may take several minutes/hours depending on the size of the repository...".format(self.repository_name.upper()))
 
         # Process all the commits contained in the repository.
         for commit in self.repository.traverse_commits():
             
-            self._commits_processed += 1
-            
-            # Prints progression messages if verbore mode is set.
-            if (self.log is not None and self.verbose and self._commits_processed % 10 == 0):
-                self.log("Processed {} commits from {}. Continuing...".format(self._commits_processed, self.repository_name.upper()), True)
-            
-            # Process the commit.
             branches = str(commit.branches)
             nb_branches = len(commit.branches)
             commit_date = commit.author_date.date()
@@ -181,25 +174,73 @@ class Delver:
                         
                         if (self.analysis_mode == utilities.AnalysisMode.COMMITS_FILES_METHODS):
                             for method in file_methods:
-                                # Create the method dataset.
+                                # Appends the data to the method dataset.
                                 methods_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, method.filename, file_type,
                                                      utilities.short_method_name(method.name), len(method.parameters), method.nloc,
                                                      method.complexity, commit.hash, commit.author.name, commit.author_date, commit_date,
                                                      commit_hour_of_day))
                         
-                        # Create the file dataset.
+                        # Appends the data to the file dataset.
                         files_rows.append((self.repository_name, branches, nb_branches, file.old_path, file.new_path, file.filename, file_extension, file_type, change_type,
                                            nb_methods, len(file_changed_methods), file.nloc, file.complexity, nloc_div_by_nb_methods, complex_div_by_nb_methods, 
                                            file_contains_SATD, SATDLine, file.added_lines, file.deleted_lines, commit.hash, commit.author.name, commit.author_date, 
                                            commit_date, commit_hour_of_day))
             
-            # Create the commit dataset.
+            # Appends the data to the commit dataset.
             commits_rows.append((self.repository_name, branches, nb_branches, commit.hash, commit.msg, commit.author.name, commit.author_date,
                                  commit_date, commit_hour_of_day, commit.merge, commit_is_bugfix, commit_contains_SATD, commit.files,
                                  "\n".join(list_of_file_names), commit_nb_prod_files, commit_nb_test_files, commit.lines,
                                  commit.insertions, commit.deletions))
+            
+            if (self._commits_processed > 0 and self.nb_commits_before_checkpoint > 0 and self._commits_processed % self.nb_commits_before_checkpoint == 0): 
+                # Generate intermediary datasets.
+                self._generate_dataset(commits_rows, commits_columns,
+                               files_rows, files_columns,
+                               methods_rows, methods_columns,
+                               analysis_errors_rows, analysis_errors_columns)
+                
+                # Reset rows lists to free up memory.
+                commits_rows = []
+                files_rows = []
+                methods_rows = []
+                analysis_errors_rows = []
+                
+                saved_to_disk_message = "Reached checkpoint and saved current data to disk. "
+            else: saved_to_disk_message = ""
+            
+            # Prints progression messages if verbose mode is set.
+            if (self._commits_processed > 0  and self._commits_processed % 10 == 0 and self.log is not None and self.verbose):
+                self.log("Processed {} commits from {}. {}Continuing...".format(self._commits_processed, self.repository_name.upper(), saved_to_disk_message), True)
+            
+            
+            self._commits_processed += 1  
         
-        # Build the datasets collection.
+        
+        # Generate the full final datasets.
+        datasets = self._generate_dataset(commits_rows, commits_columns,
+                               files_rows, files_columns,
+                               methods_rows, methods_columns,
+                               analysis_errors_rows, analysis_errors_columns)
+        
+        if self.log is not None:
+            end_time = datetime.now()
+            self.log("Analysis of {} complete. Processed {} commits in {}.".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))
+        
+        
+        if self.nb_commits_before_checkpoint == 0:
+            # Useful only when nb_commits_before_checkpoint = 0. Mainly used for unit tests.
+            return datasets
+    
+    
+    def _build_datasets_objects(self, commits_rows: List, commits_columns: List,
+                                   files_rows: List, files_columns: List,
+                                   methods_rows: List, methods_columns: List,
+                                   analysis_errors_rows: List, analysis_errors_columns: List) -> List[DataSet]:
+        """
+        Builds the datasets collection. This method returns a list of datasets contained in Pandas dataframes.
+
+        """
+        
         datasets = [DataSet("commits_history", pd.DataFrame(commits_rows, columns=commits_columns))]
         
         if (self.analysis_mode in [utilities.AnalysisMode.COMMITS_FILES, utilities.AnalysisMode.COMMITS_FILES_METHODS]):
@@ -213,36 +254,60 @@ class Delver:
             datasets.append(DataSet("analysis_errors", pd.DataFrame(analysis_errors_rows, columns=analysis_errors_columns)))
         
         return datasets
-        
+    
     
     def _produce_csv(self, datasets: List[DataSet]):
         """
         Generates CSV files from the Pandas datasets. 
         Side effect: CSV files are written in csv_output_folder_path.
         """
-    
+        
         for dataset in datasets:
+            
             path = str(Path(self.csv_output_folder_path).joinpath("{}_{}.csv".format(self.repository_name, dataset.name)))
             
-            try:
-                dataset.dataframe.to_csv(path, index=False)
-            except Exception as ex:
-                utilities._handle_error(ex)
+            if (self.nb_commits_before_checkpoint > 0 and not self._is_first_write):
+                # This is an intermediary write. Append to the file.
+                
+                if (self._is_first_write and Path(path).exists()):
+                    utilities._handle_error("File \"{}\" already exists. Aborting to avoid appending data to it...".format(path))
+                
+                try:
+                    dataset.dataframe.to_csv(path, mode='a', header=False, index=False)
+                except Exception as ex:
+                    utilities._handle_error(ex)
+            else:
+                # This is the first write.
+                try:
+                    dataset.dataframe.to_csv(path, index=False)
+                    
+                    self._is_first_write = False
+                    
+                except Exception as ex:
+                    utilities._handle_error(ex)
+        
     
     
-    def run(self):
+    def _generate_dataset(self, commits_rows: List, commits_columns: List,
+                                   files_rows: List, files_columns: List,
+                                   methods_rows: List, methods_columns: List,
+                                   analysis_errors_rows: List, analysis_errors_columns: List):
         """
-        Combines the delving and CSV generating operations. This is mainly used by the GitDelver console application.
+        This method combines the generation of the dataset objects and the production of the CSV files.
+
         """
         
-        if self.log is not None:        
-            start_time = datetime.now()
-            self.log("Starting delving into {}. This operation may take several minutes/hours depending on the size of the repository...".format(self.repository_name.upper()))
+        # Build the datasets collection.
+        datasets = self._build_datasets_objects(commits_rows, commits_columns,
+                                                   files_rows, files_columns,
+                                                   methods_rows, methods_columns,
+                                                   analysis_errors_rows, analysis_errors_columns)
         
-        datasets = self.delve()
         
         self._produce_csv(datasets)
         
-        if self.log is not None:
-            end_time = datetime.now()
-            self.log("Analysis of {} complete. Processed {} commits in {}.".format(self.repository_name.upper(), self._commits_processed, end_time - start_time))
+        
+        if self.nb_commits_before_checkpoint == 0:
+            # Useful only when nb_commits_before_checkpoint = 0. Mainly used for unit tests.
+            return datasets
+        
