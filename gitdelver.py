@@ -66,7 +66,7 @@ def _check_config_params(params: config_params):
     if not isinstance(params["keep_unsupported_files"], bool):
         utilities._handle_error("Configuration parameter \"keep_unsupported_files\" has an invalid value")
     
-    if (params["analysis_mode"] not in [utilities.AnalysisMode.COMMITS, utilities.AnalysisMode.COMMITS_FILES,
+    if (params["analysis_mode"] not in [utilities.AnalysisMode.COMMITS_FILES,
                                         utilities.AnalysisMode.COMMITS_FILES_METHODS]):
         utilities._handle_error("Configuration parameter \"analysis_mode\" has an invalid value")
     

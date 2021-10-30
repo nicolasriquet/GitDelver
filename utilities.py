@@ -34,9 +34,8 @@ class AnalysisMode(Enum):
     """
     Used to set the mode of the analysis: commits only, commits and files, commits and files and methods.
     """
-    COMMITS = 1
-    COMMITS_FILES = 2
-    COMMITS_FILES_METHODS = 3
+    COMMITS_FILES = 1
+    COMMITS_FILES_METHODS = 2
 
 
 def get_file_type(file_name: str) -> str:

@@ -122,10 +122,9 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
   * repositories_folder_path/repo N/(.git + code files)  
 * csv_output_folder_path: file system path to the folder where the generated CSV files are to be created.
 * keep_unsupported_files: **GitDelver** uses some advanced features of PyDriller that are only available for supported file types (i.e. most common source code files). Set this option to True if you want **GitDelver** to report unsupported files as well.
-* analysis_mode: GitDelver supports three modes of analysis.
-    * AnalysisMode.COMMITS: produces only the 'commits_history' dataset. Warning: columns related to files will not be calculated.
-    * AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. Warning: columns related to methods will not be calculated.
-    * AnalysisMode.COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. This is the default mode but it takes more time.
+* analysis_mode: GitDelver supports two modes of analysis.
+    * AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. This is the default mode
+    * AnalysisMode.COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. This mode takes more time.
 * nb_processes: **GitDelver** uses Python multiprocessing for analyzing multiple repositories at once. Nowadays, most computers have at least 4 virtual CPUs, so this is the default value. You can set it to less or more in function of your needs. **GitDelver** will check that the entered value is correct and will limit this parameter to the maximum number of available vitrtual CPUs.
 * nb_commits_before_checkpoint: This parameter tells the **GitDelver** to write the current results to disk and free up memory once a certain amount of commits have been processed. The tool will resume its analyses afterwards and will continue writing to disk each time this amount of new commits has been processed. If the parameter is set to 0 no writing to disk will occur until all commits have been processed. The default value is 50 commits.
 * verbose: this parameter sets the volume of feedback information provided by **GitDelver**. The analysis operation can take dozens of minutes for big repositories, so it is advised to set this to True in order to monitor its progression.

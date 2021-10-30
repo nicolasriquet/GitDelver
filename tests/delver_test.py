@@ -70,23 +70,7 @@ def delver_COMMITS_FILES_fixture() -> List[pd.DataFrame]:
     return datasets
 
 
-@pytest.fixture
-def delver_COMMITS_fixture() -> List[pd.DataFrame]:
-    """
-    This test fixture initializes the test repository.
-    """
-
-    current_dir = os.path.dirname(__file__)
-    repo_path = current_dir + "/test_repos/small_repo"
-    
-    delver = Delver(repo_path, analysis_mode = utilities.AnalysisMode.COMMITS, nb_commits_before_checkpoint = 0)
-    
-    datasets = delver.run()
-    
-    return datasets
-
-
-def test_delver_COMMITS_FILES_METHODS_delve_nb_datasets(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_COMMITS_FILES_METHODS_run_nb_datasets(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that Delver returns the expected number of datasets.
     """
@@ -96,7 +80,7 @@ def test_delver_COMMITS_FILES_METHODS_delve_nb_datasets(delver_COMMITS_FILES_MET
     assert len(datasets) == 3
 
 
-def test_delver_COMMITS_FILES_delve_nb_datasets(delver_COMMITS_FILES_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_COMMITS_FILES_run_nb_datasets(delver_COMMITS_FILES_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that Delver returns the expected number of datasets.
     """
@@ -106,17 +90,7 @@ def test_delver_COMMITS_FILES_delve_nb_datasets(delver_COMMITS_FILES_fixture: Ca
     assert len(datasets) == 2
 
 
-def test_delver_COMMITS_delve_nb_datasets(delver_COMMITS_fixture: Callable[[None], List[pd.DataFrame]]):
-    """
-    This unit test checks that Delver returns the expected number of datasets.
-    """
-    
-    datasets = delver_COMMITS_fixture
-    
-    assert len(datasets) == 1
-
-
-def test_delver_delve_datasets_names(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_run_datasets_names(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
     This unit test checks that the generated datasets have the expected names.
     """
@@ -133,18 +107,46 @@ def test_delver_delve_datasets_names(delver_COMMITS_FILES_METHODS_fixture: Calla
     assert test_pass is True
 
 
-def test_delver_delve_datasets_shapes(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
+def test_delver_run_commits_dataset_shape(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
     """
-    This unit test checks that the generated datasets have the expected shapes.
+    This unit test checks that the generated commits dataset has the expected shape.
     """
     
     datasets = delver_COMMITS_FILES_METHODS_fixture
     
     test_pass = False
     
-    if (datasets[0].dataframe.shape == (5, 19) and
-        datasets[1].dataframe.shape == (6, 24) and
-        datasets[2].dataframe.shape == (70, 16)):
+    if (datasets[0].dataframe.shape == (5, 19)):
+        test_pass = True
+    
+    assert test_pass is True
+
+
+def test_delver_run_files_dataset_shape(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
+    """
+    This unit test checks that the generated files dataset has the expected shape.
+    """
+    
+    datasets = delver_COMMITS_FILES_METHODS_fixture
+    
+    test_pass = False
+    
+    if (datasets[1].dataframe.shape == (6, 24)):
+        test_pass = True
+    
+    assert test_pass is True
+
+
+def test_delver_run_methods_dataset_shape(delver_COMMITS_FILES_METHODS_fixture: Callable[[None], List[pd.DataFrame]]):
+    """
+    This unit test checks that the generated methods dataset has the expected shape.
+    """
+    
+    datasets = delver_COMMITS_FILES_METHODS_fixture
+    
+    test_pass = False
+    
+    if (datasets[2].dataframe.shape == (70, 16)):
         test_pass = True
     
     assert test_pass is True

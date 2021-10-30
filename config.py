@@ -47,7 +47,7 @@ config_params = {
     # AnalysisMode.COMMITS: produces only the 'commits_history' dataset. Warning: columns related to files will not be calculated.
     # AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. Warning: columns related to methods will not be calculated.
     # AnalysisMode.COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. This is the default mode but it takes more time.
-    "analysis_mode": AnalysisMode.COMMITS_FILES_METHODS,#AnalysisMode.COMMITS_FILES,
+    "analysis_mode": AnalysisMode.COMMITS_FILES,
     
     # GitDelver uses Python multiprocessing for analyzing multiple repositories at once.
     # Nowadays, most computers have at least 4 virtual CPUs, so this is the default value.
