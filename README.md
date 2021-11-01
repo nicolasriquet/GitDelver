@@ -109,7 +109,7 @@ A fourth dataset may be generated on the rare occasion that a supported file cou
 
 ## License
 
-**GitDelver** is open source software and is distributed under the MIT license. Contributions are welcome!
+**GitDelver** is open source software and is distributed under the Apache license, version 2.0. Contributions are welcome!
 
 ## Usage
 
