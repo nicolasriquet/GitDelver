@@ -52,7 +52,7 @@ def _check_config_params(params: config_params):
     for path_var in list_of_path_vars:
         path = params[path_var]
         
-        if not (Path(path).exists()):
+        if path == "" or not (Path(path).exists()):
             utilities._handle_error("Path \"{}\" does not exist".format(path))
     
     if not isinstance(params["keep_unsupported_files"], bool):
