@@ -24,7 +24,7 @@ from enum import Enum
 
 class AnalysisMode(Enum):
     """
-    Used to set the mode of the analysis: commits only, commits and files, commits and files and methods.
+    Used to set the mode of the analysis: commits and files, commits and files and methods.
     """
     COMMITS_FILES = 1
     COMMITS_FILES_METHODS = 2
