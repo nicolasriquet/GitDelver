@@ -36,7 +36,6 @@ config_params = {
     "keep_unsupported_files": False,
     
     # GitDelver supports three modes of analysis:
-    # AnalysisMode.COMMITS: produces only the 'commits_history' dataset. Warning: columns related to files will not be calculated.
     # AnalysisMode.COMMITS_FILES: produces the 'commits_history' and 'files_history' datasets. Warning: columns related to methods will not be calculated.
     # AnalysisMode.COMMITS_FILES_METHODS: produces the 'commits_history', 'files_history' and the 'methods_history' datasets. This is the default mode but it takes more time.
     "analysis_mode": AnalysisMode.COMMITS_FILES,
