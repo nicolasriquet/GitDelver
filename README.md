@@ -8,6 +8,9 @@
 
 *Riquet, N., Devroey, X., & Vanderose, B. (2022, May). GitDelver Enterprise Dataset (GDED): An Industrial Closed-source Dataset for Socio-Technical Research. In 19th International Conference on Mining Software Repositories (MSR'22), May 23-24, 2022, Pittsburgh, PA, USA. ACM Press.*
 
+You can read it here:
+
+[GitDelver Enterprise Dataset (GDED): An Industrial Closed-source Dataset for Socio-Technical Research](https://xdevroey.be/publication/riquet-2022/riquet-2022.pdf)
 
 ## Generated datasets
 
